@@ -36,10 +36,23 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:textSize="15dp"
+            android:inputType="text"
             android:textColor="#000"
             android:id="@+id/input_search"
             android:background="@null"
             android:hint="Enter Address, City or Zip Code"
             android:imeOptions="actionSearch"/>
     </RelativeLayout>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relLayout"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/ic_gps"
+        android:src="@drawable/ic_gps"/>
+
+
+
 </RelativeLayout>
