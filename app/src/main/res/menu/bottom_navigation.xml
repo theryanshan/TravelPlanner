@@ -8,7 +8,8 @@
     <item
         android:id="@+id/nav_list"
         android:icon="@drawable/ic_format_list_icon"
-        android:title="List" />
+        android:title="List"
+        android:visible="true" />
     <item
         android:id="@+id/nav_plan"
         android:icon="@drawable/ic_assignment_turned_in_icon"
