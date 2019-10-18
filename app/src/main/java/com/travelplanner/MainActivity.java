@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         Log.d(TAG, "onCreate: Hereeeeeeeee");
-        Button btnMap = findViewById(R.id.btnMap);
-        btnMap.setOnClickListener(new View.OnClickListener() {
+        Button btnLogin = findViewById(R.id.btn_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);

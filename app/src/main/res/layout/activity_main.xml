@@ -1,16 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#1A1E21"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/travel_background"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/line_login"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="172dp"
+        android:textColorHint="#fff"
+        android:theme="@style/myEditTextStyle">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_mail_black_24dp"
+            android:hint="Email"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/line_signUp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="124dp"
+        android:theme="@style/myEditTextStyle">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_lock_outline_black_24dp"
+            android:hint="Password"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
-        android:id="@+id/btnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Map" />
+        android:id="@+id/btn_login"
+        android:text="Log In"
+        android:textColor="#128c7f"
+        android:textStyle="bold"
+        android:background="@drawable/bg_button_white"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="54dp"
+        android:layout_marginLeft="90dp"/>
+
+    <Button
+        android:id="@+id/btn_signUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="54dp"
+        android:layout_marginRight="90dp"
+        android:background="@drawable/bg_button_white"
+        android:text="Sign Up"
+        android:textColor="#128c7f"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="80dp"
+        android:text="Travel Planner"
+        android:textSize="56dp"
+        android:fontFamily="@font/lobster"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </RelativeLayout>
