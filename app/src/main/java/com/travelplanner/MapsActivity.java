@@ -2,8 +2,6 @@ package com.travelplanner;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,10 +12,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,12 +28,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -40,6 +47,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView mGps;
     private Boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private PlacesClient placesClient;
+    private List<AutocompletePrediction> predictionList;
+    private Location mLastKnownLocation;
+    private AutocompleteSessionToken token;
+
     private static final String TAG = "MapsActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -54,7 +66,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getLocationPermission();
         mSearchText = findViewById(R.id.input_search);
         mGps = findViewById(R.id.ic_gps);
-        placeAPIInit();
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        Places.initialize(MapsActivity.this, String.valueOf(R.string.google_maps_key));
+        placesClient = Places.createClient(this);
+        token = AutocompleteSessionToken.newInstance();
     }
 
     private void init() {
@@ -77,33 +93,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void geoLocate() {
         Log.d(TAG, "geoLocate: locating the geo");
         String searchString = mSearchText.getText().toString();
-        Geocoder geocoder = new Geocoder(MapsActivity.this);
-        List<Address> list = new ArrayList<>();
-        try {
-            list = geocoder.getFromLocationName(searchString, 1);
-        } catch (IOException e) {
-            Log.e(TAG, "geoLocate: IOException" + e.getMessage());
-        }
-        if (list.size() > 0) {
-            Address address = list.get(0);
-            Log.d(TAG, "geoLocate: Found an address" + address.toString());
-            Toast.makeText(this, "Found " + address.getAddressLine(0), Toast.LENGTH_SHORT).show();
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
-        }
+
+        // Places API
+        FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
+                .setCountry("us")
+                .setTypeFilter(TypeFilter.ADDRESS)
+                .setSessionToken(token)
+                .setQuery(searchString)
+                .build();
+        placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                if (task.isSuccessful()) {
+                    FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
+                    if (predictionsResponse != null) {
+                        Log.d(TAG, "onComplete: prediction found!!!");
+                        predictionList = predictionsResponse.getAutocompletePredictions();
+                    }
+                } else {
+                    Log.d(TAG, "onComplete: prediction fetching task unsuccessful");
+                }
+            }
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+                Log.d(TAG, "Place not found: " + apiException.getStatusCode());
+            }
+        });
     }
 
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the current location");
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             if (mLocationPermissionGranted) {
                 Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener((Task task) -> {
                     if (task.isSuccessful()) {
-                        Location currentLocation = (Location) task.getResult();
-                        if (currentLocation != null) {
+                        mLastKnownLocation = (Location) task.getResult();
+                        if (mLastKnownLocation != null) {
                             Log.d(TAG, "onComplete: found current location");
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, "My Location");
+                            moveCamera(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM, "My Location");
                         } else {
                             Log.d(TAG, "getDeviceLocation: Current location is null");
                         }
@@ -180,12 +209,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             init();
         }
-    }
-
-    // Places API
-    private void placeAPIInit() {
-        Places.initialize(getApplicationContext(), String.valueOf(R.string.google_maps_key));
-        PlacesClient placesClient = Places.createClient(this);
-        Log.d(TAG, "placeAPIInit: " + placesClient.toString());
     }
 }
