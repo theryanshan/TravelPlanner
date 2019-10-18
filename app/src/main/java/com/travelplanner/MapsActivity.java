@@ -26,6 +26,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getLocationPermission();
         mSearchText = findViewById(R.id.input_search);
         mGps = findViewById(R.id.ic_gps);
+        placeAPIInit();
     }
 
     private void init() {
@@ -177,5 +180,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             init();
         }
+    }
+
+    // Places API
+    private void placeAPIInit() {
+        Places.initialize(getApplicationContext(), String.valueOf(R.string.google_maps_key));
+        PlacesClient placesClient = Places.createClient(this);
+        Log.d(TAG, "placeAPIInit: " + placesClient.toString());
     }
 }
