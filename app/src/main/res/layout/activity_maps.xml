@@ -55,6 +55,47 @@
         android:id="@+id/ic_gps"
         android:src="@drawable/ic_gps"/>
 
+    <HorizontalScrollView
+        android:id="@+id/horizontal_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1A1E21"
+        android:layout_alignParentBottom="true"
+        android:padding="15dp"
+        android:layout_marginBottom="68dp"
+        >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_alignParentBottom="true"
         android:id="@+id/navigation_view"
