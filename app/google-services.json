@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "742962471679",
+    "firebase_url": "https://travelplanner-ffc94.firebaseio.com",
+    "project_id": "travelplanner-ffc94",
+    "storage_bucket": "travelplanner-ffc94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742962471679:android:6e8d46376dde43cbfde2ca",
+        "android_client_info": {
+          "package_name": "com.travelplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742962471679-905vqape9nkg8kev3t4bnghuucqnglus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPRLSulgM4ta508Ud9L12nC2X_28x51W0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742962471679-905vqape9nkg8kev3t4bnghuucqnglus.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
