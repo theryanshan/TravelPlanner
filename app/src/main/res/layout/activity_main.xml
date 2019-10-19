@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/line_login"
+        android:id="@+id/log_in_email"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginStart="45dp"
@@ -39,7 +39,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/line_signUp"
+        android:id="@+id/log_in_password"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginStart="45dp"
