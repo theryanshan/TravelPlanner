@@ -1,6 +1,8 @@
 package com.travelplanner;
 
 import android.Manifest;
+import android.app.ListActivity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -45,12 +47,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private EditText mSearchText;
     private ImageView mGps;
+    private ImageView mList;
     private Boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlacesClient placesClient;
     private List<AutocompletePrediction> predictionList;
     private Location mLastKnownLocation;
     private AutocompleteSessionToken token;
+
 
     private static final String TAG = "MapsActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -68,9 +72,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGps = findViewById(R.id.ic_gps);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        Places.initialize(MapsActivity.this, getResources().getString(R.string.google_api_key));
+        Places.initialize(MapsActivity.this, String.valueOf(R.string.google_maps_key));
         placesClient = Places.createClient(this);
         token = AutocompleteSessionToken.newInstance();
+
+        mList = findViewById(R.id.ic_menu_edit);
+        mList.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                showList();
+            }
+        });
+    }
+
+    private void showList(){
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
     }
 
     private void init() {
