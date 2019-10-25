@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        InitiatePoiDB();
         if (isServiceOK()) {
             init();
         }
@@ -96,5 +96,24 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    private void writePoi(String rank, String name, String address, String image) {
+        Poi poi = new Poi(name, address, image);
+        database.child(rank).setValue(poi);
+    }
+
+    private void InitiatePoiDB(){
+        database = FirebaseDatabase.getInstance().getReference().child("POI");
+        writePoi("1","Golden Gate Bridge","Golden Gate Bridge, San Francisco, CA","gs://travelplanner-ffc94.appspot.com/california-san-francisco-golden-gate-bridge.jpg");
+        writePoi("2","Alcatraz Island","San Francisco, CA 94133","gs://travelplanner-ffc94.appspot.com/california-san-francisco-alcatraz-island.jpg");
+        writePoi("3","Fisherman's Wharf","The Embarcadero, San Francisco, CA 94133","gs://travelplanner-ffc94.appspot.com/california-san-francisco-fishermans-wharf.jpg");
+        writePoi("4","Powell/Mason Cable Car","2350 Taylor St, San Francisco, CA 94133","gs://travelplanner-ffc94.appspot.com/california-san-francisco-cable-cars.jpg");
+        writePoi("5","Golden Gate Park","Golden Gate Park, San Francisco, CA 94122","gs://travelplanner-ffc94.appspot.com/california-san-francisco-golden-gate-park.jpg");
+        writePoi("6","Chinatown","Stockton St Tunnel, San Francisco, CA 94108","gs://travelplanner-ffc94.appspot.com/california-san-francisco-chinatown.jpg");
+        writePoi("7","Legion of Honor","100 34th Ave, San Francisco, CA 94121","gs://travelplanner-ffc94.appspot.com/california-san-francisco-legion-of-honor-and-fountain.jpg");
+        writePoi("8","Palace of Fine Arts","3601 Lyon St, San Francisco, CA 94123","gs://travelplanner-ffc94.appspot.com/california-san-francisco-palace-of-fine-arts.jpg");
+        writePoi("9","California Academy of Sciences","55 Music Concourse Dr, San Francisco, CA 94118","gs://travelplanner-ffc94.appspot.com/california-san-francisco-attractions-academy-of-sciences-green-roof.jpg");
+        writePoi("10","San Francisco Museum of Modern Art","151 3rd St, San Francisco, CA 94103","gs://travelplanner-ffc94.appspot.com/california-san-francisco-museum-of-modern-art.jpg");
     }
 }
