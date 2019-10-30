@@ -113,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
         writePoi("6","Chinatown","Stockton St Tunnel, San Francisco, CA 94108","https://firebasestorage.googleapis.com/v0/b/travelplanner-ffc94.appspot.com/o/california-san-francisco-chinatown.jpg?alt=media&token=4137a214-a36b-4558-8217-1722c58fc91a");
         writePoi("7","Legion of Honor","100 34th Ave, San Francisco, CA 94121","https://firebasestorage.googleapis.com/v0/b/travelplanner-ffc94.appspot.com/o/california-san-francisco-legion-of-honor-and-fountain.jpg?alt=media&token=ba97ce90-9a4e-4071-8f8c-e7dc0a3f78e2");
         writePoi("8","Palace of Fine Arts","3601 Lyon St, San Francisco, CA 94123","https://firebasestorage.googleapis.com/v0/b/travelplanner-ffc94.appspot.com/o/california-san-francisco-palace-of-fine-arts.jpg?alt=media&token=b57756d4-a45a-481a-9f40-f3c191179b1d");
-        writePoi("9","California Academy of Sciences","55 Music Concourse Dr, San Francisco, CA 94118","ghttps://firebasestorage.googleapis.com/v0/b/travelplanner-ffc94.appspot.com/o/california-san-francisco-attractions-academy-of-sciences-green-roof.jpg?alt=media&token=054773d3-948c-4b85-87cd-8111a872e61f");
+        writePoi("9","California Academy of Sciences","55 Music Concourse Dr, San Francisco, CA 94118","https://firebasestorage.googleapis.com/v0/b/travelplanner-ffc94.appspot.com/o/california-san-francisco-attractions-academy-of-sciences-green-roof.jpg?alt=media&token=054773d3-948c-4b85-87cd-8111a872e61f");
         writePoi("10","San Francisco Museum of Modern Art","151 3rd St, San Francisco, CA 94103","https://firebasestorage.googleapis.com/v0/b/travelplanner-ffc94.appspot.com/o/california-san-francisco-museum-of-modern-art.jpg?alt=media&token=f341b07e-e68d-43ce-8ee0-b2a5a2853448");
     }
-
 }
