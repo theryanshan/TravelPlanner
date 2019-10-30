@@ -25,7 +25,7 @@ public class ListActivity extends AppCompatActivity {
 
     private ArrayList<Poi> mList;
 
-    private DatabaseReference database;
+    protected DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
