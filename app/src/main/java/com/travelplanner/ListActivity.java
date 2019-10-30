@@ -24,7 +24,6 @@ public class ListActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
         Log.d(TAG, "onCreate: started.");
 
         initImageBitmaps();

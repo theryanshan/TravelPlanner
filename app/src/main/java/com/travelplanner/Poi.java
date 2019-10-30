@@ -1,10 +1,14 @@
 package com.travelplanner;
 
 public class Poi {
-    public String poi_rank;
-    public String poi_name;
-    public String poi_address;
-    public String poi_image;
+    private String poi_rank;
+    private String poi_name;
+    private String poi_address;
+    private String poi_image;
+
+    public Poi() {
+
+    }
 
     public String getPoi_rank() {
 

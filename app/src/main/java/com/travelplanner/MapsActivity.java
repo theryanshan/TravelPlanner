@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,13 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -61,6 +70,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
 
+    private FirebaseDatabase database;
+    private DatabaseReference poiReference;
+    private List<Poi> pois = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +88,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placesClient = Places.createClient(this);
         token = AutocompleteSessionToken.newInstance();
 
+        loadInPOIData();
+        addPOIToScrollView();
+
         mList = findViewById(R.id.ic_menu_edit);
         mList.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -82,6 +98,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showList();
             }
         });
+    }
+
+    private void loadInPOIData() {
+        database = FirebaseDatabase.getInstance();
+        poiReference = database.getReference("POI");
+        readPois();
+        addPOIToScrollView();
+    }
+
+    private void readPois() {
+        poiReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                pois.clear();
+                List<String> ranks = new ArrayList<>();
+                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
+                    ranks.add(keyNode.getKey());
+                    Poi poi = keyNode.getValue(Poi.class);
+                    pois.add(poi);
+                }
+                Log.d(TAG, "Jeffffff");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    
+    private void addPOIToScrollView() {
+        LinearLayout poiScrollBox = findViewById(R.id.poi_scroll_box);
+        for (int i = 0; i < pois.size(); i++) {
+            String poi_id = "poi_" + i;
+            int resID = getResources().getIdentifier(poi_id, "id", getPackageName());
+            ImageView image = findViewById(resID);
+        }
+        Log.d(TAG, "Here we want to add Poi information to the scroll view");
     }
 
     private void showList(){

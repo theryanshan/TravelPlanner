@@ -75,30 +75,66 @@
         android:layout_marginBottom="68dp"
         >
         <LinearLayout
+            android:id="@+id/poi_scroll_box"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageButton
+                android:id="@+id/poi_0"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/place_one"
                 />
             <ImageButton
+                android:id="@+id/poi_1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/place_one"
                 />
             <ImageButton
+                android:id="@+id/poi_2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/place_one"
                 />
             <ImageButton
+                android:id="@+id/poi_3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/place_one"
                 />
             <ImageButton
+                android:id="@+id/poi_4"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:id="@+id/poi_5"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:id="@+id/poi_6"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:id="@+id/poi_7"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:id="@+id/poi_8"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/place_one"
+                />
+            <ImageButton
+                android:id="@+id/poi_9"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/place_one"
