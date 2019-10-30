@@ -18,28 +18,30 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "RecyclerViewAdapter";
 
     private Context mContext;
-    private ArrayList<Sight> mList;
+    private ArrayList<Poi> mList;
 
-    public RecyclerViewAdapter(Context mContext, ArrayList<Sight> list) {
+    public RecyclerViewAdapter(Context mContext, ArrayList<Poi> mList) {
         this.mContext = mContext;
-        this.mList = list;
+        this.mList = mList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private CircleImageView image;
-        private TextView imageName;
+        private CircleImageView poi_image;
+        private TextView poi_name;
+        private TextView poi_address;
         private RelativeLayout parentLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.image);
-            imageName = itemView.findViewById(R.id.image_name);
+            poi_image = itemView.findViewById(R.id.poi_image);
+            poi_name = itemView.findViewById(R.id.poi_name);
+            poi_address = itemView.findViewById(R.id.poi_address);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
@@ -55,20 +57,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called.");
 
-        Sight sight = mList.get(position);
+        Poi poi = mList.get(position);
 
         Glide.with(mContext)
-                .load(sight.getmImage())
-                .into(holder.image);
+                .load(poi.getPoi_image())
+                .into(holder.poi_image);
 
-        holder.imageName.setText(sight.getmImageName());
+        holder.poi_name.setText(poi.getPoi_name());
+        holder.poi_address.setText(poi.getPoi_address());
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: clicked on:" + sight.getmImageName());
+                Log.d(TAG, "onClick: clicked on:" + poi.getPoi_name());
 
-                Toast.makeText(mContext, sight.getmImageName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, poi.getPoi_name(), Toast.LENGTH_SHORT).show();
             }
         });
     }

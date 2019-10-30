@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -133,7 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < pois.size(); i++) {
             String poi_id = "poi_" + i;
             int resID = getResources().getIdentifier(poi_id, "id", getPackageName());
-            ImageView image = findViewById(resID);
+            ImageButton imageBtn = findViewById(resID);
         }
         Log.d(TAG, "Here we want to add Poi information to the scroll view");
     }

@@ -10,6 +10,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -17,7 +23,9 @@ public class ListActivity extends AppCompatActivity {
 
     private static final String TAG = "ListActivity";
 
-    private ArrayList<Sight> sightsList;
+    private ArrayList<Poi> mList;
+
+    protected DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,27 +34,33 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         Log.d(TAG, "onCreate: started.");
 
-        initImageBitmaps();
+        fetchPoiDB();
     }
 
-    private void initImageBitmaps(){
+    private void fetchPoiDB(){
 
-        Log.d(TAG, "initImageBitmaps: preparing bitmaps.");
+        Log.d(TAG, "fetchPoiDB: fetch poi from database.");
 
-        sightsList = new ArrayList<>();
+        mList = new ArrayList<>();
+        database = FirebaseDatabase.getInstance().getReference("POI");
 
-        sightsList.add(new Sight("https://lh5.googleusercontent.com/p/AF1QipMOj6JVpBmVhD8OtWqyjQdyWiFrL4bINQLGbkxB=w408-h272-k-no",
-                "Eiffel Tower" ));
-        sightsList.add(new Sight("https://lh5.googleusercontent.com/p/AF1QipOHsCei7y32AP7cyaAd147_9_6LeEcWMzatt4Fh=w408-h544-k-no",
-                "Golden Gate Park" ));
-        sightsList.add(new Sight("https://lh5.googleusercontent.com/p/AF1QipMHa-S-Zn8BITCSBVqk5m-fWQBB6weD2jBzCqQM=w408-h696-k-no",
-                "Statue of Liberty" ));
-        sightsList.add(new Sight("https://lh5.googleusercontent.com/p/AF1QipOEBZASPVo4C_PXLTsxObDqt6lvl_XqHD0c7hEU=w408-h306-k-no",
-                "Ferry Building" ));
-        sightsList.add(new Sight("https://lh5.googleusercontent.com/p/AF1QipNaHyF0wO-4HZgZlcSvii9KqihAVwll7ZMbfGGJ=w408-h725-k-no",
-                "Trinity Church" ));
-        sightsList.add(new Sight("https://lh5.googleusercontent.com/p/AF1QipNnGjrU44Rnr1tT6EkGjEEuXjLtSMuKWLDqiKC_=w408-h544-k-no",
-                "Charging Bull" ));
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot poiSnapshot : dataSnapshot.getChildren()){
+
+                    Poi poi = poiSnapshot.getValue(Poi.class);
+
+                    mList.add(poi);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: Error occured");
+            }
+        });
 
         initRecyclerView();
     }
@@ -56,7 +70,7 @@ public class ListActivity extends AppCompatActivity {
         Log.d(TAG, "initRecyclerView: init recycler view.");
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerView.Adapter adapter = new RecyclerViewAdapter(this, sightsList);
+        RecyclerView.Adapter adapter = new RecyclerViewAdapter(this, mList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -73,7 +87,7 @@ public class ListActivity extends AppCompatActivity {
                 int position_dragged = dragged.getAdapterPosition();
                 int position_target = target.getAdapterPosition();
 
-                Collections.swap(sightsList, position_dragged, position_target);
+                Collections.swap(mList, position_dragged, position_target);
                 adapter.notifyItemMoved(position_dragged, position_target);
                 return false;
             }
@@ -82,7 +96,7 @@ public class ListActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
                 int position = viewHolder.getAdapterPosition();
-                sightsList.remove(position);
+                mList.remove(position);
                 adapter.notifyItemRemoved(position);
             }
         });

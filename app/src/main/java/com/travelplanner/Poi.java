@@ -9,6 +9,15 @@ public class Poi {
     public Poi() {
 
     }
+<<<<<<< HEAD
+=======
+
+    public Poi(String poi_name, String poi_address, String poi_image) {
+        this.poi_name = poi_name;
+        this.poi_address = poi_address;
+        this.poi_image = poi_image;
+    }
+>>>>>>> ac5efdde7b5f0ae79248164d44c46a9670f645ac
 
     public String getPoi_rank() {
 
@@ -49,13 +58,6 @@ public class Poi {
 
         this.poi_image = poi_image;
     }
-
-    public Poi(String poi_name, String poi_address, String poi_image) {
-        this.poi_name = poi_name;
-        this.poi_address = poi_address;
-        this.poi_image = poi_image;
-    }
-
 }
 
 
