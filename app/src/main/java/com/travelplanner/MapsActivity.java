@@ -98,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGps = findViewById(R.id.ic_gps);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        Places.initialize(MapsActivity.this, String.valueOf(R.string.google_maps_key));
+        Places.initialize(MapsActivity.this, getResources().getString(R.string.google_api_key));
         placesClient = Places.createClient(this);
         token = AutocompleteSessionToken.newInstance();
 

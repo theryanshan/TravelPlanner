@@ -1,10 +1,20 @@
 package com.travelplanner;
 
 public class Poi {
-    public String poi_rank;
-    public String poi_name;
-    public String poi_address;
-    public String poi_image;
+    private String poi_rank;
+    private String poi_name;
+    private String poi_address;
+    private String poi_image;
+
+    public Poi() {
+
+    }
+
+    public Poi(String poi_name, String poi_address, String poi_image) {
+        this.poi_name = poi_name;
+        this.poi_address = poi_address;
+        this.poi_image = poi_image;
+    }
 
     public String getPoi_rank() {
 
@@ -45,13 +55,6 @@ public class Poi {
 
         this.poi_image = poi_image;
     }
-
-    public Poi(String poi_name, String poi_address, String poi_image) {
-        this.poi_name = poi_name;
-        this.poi_address = poi_address;
-        this.poi_image = poi_image;
-    }
-
 }
 
 
