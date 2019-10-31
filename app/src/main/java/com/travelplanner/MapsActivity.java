@@ -83,7 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private MarkerOptions bridge;
     private MarkerOptions wharf;
     private MarkerOptions chinaTown;
-    //private List<MarkerOptions> places;
+    private List<MarkerOptions> places;
 
 
     @Override
@@ -112,20 +112,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /**
          ***************** route generating from here *****************
          */
-        // fake locations by hard code: Golden Gate Bridge & Fisherman's Wharf
-        bridge = new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title("Location 1");
-        wharf = new MarkerOptions().position(new LatLng(37.806710, -122.416336)).title("Location 2");
-        chinaTown = new MarkerOptions().position(new LatLng(37.7941, -122.4078)).title("Location 3");
-        new FetchURL(MapsActivity.this).execute(getUrl(bridge.getPosition(), wharf.getPosition(), "driving"), "driving");
-        new FetchURL(MapsActivity.this).execute(getUrl(wharf.getPosition(), chinaTown.getPosition(), "driving"), "driving");
+//        // fake locations by hard code: Golden Gate Bridge & Fisherman's Wharf
+//        bridge = new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title("Location 1");
+//        wharf = new MarkerOptions().position(new LatLng(37.806710, -122.416336)).title("Location 2");
+//        chinaTown = new MarkerOptions().position(new LatLng(37.7941, -122.4078)).title("Location 3");
+//        new FetchURL(MapsActivity.this).execute(getUrl(bridge.getPosition(), wharf.getPosition(), "driving"), "driving");
+//        new FetchURL(MapsActivity.this).execute(getUrl(wharf.getPosition(), chinaTown.getPosition(), "driving"), "driving");
 
-//        // real locations:
-//        // for now i starts from 1, will cause bug if select less than 2 POIs
-//        // need a starting point (e.g., hotel)
-//        for(int i = 1; i < pois.size(); i++) {
-//            /** need a lat long getter here */
-//            places.add(new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title(pois.get(i).getPoi_name()));
-//        }
+        // real locations:
+        // for now i starts from 1, will cause bug if select less than 2 POIs
+        // need a starting point (e.g., hotel)
+        for(int i = 1; i < pois.size(); i++) {
+            /** need a lat long getter here */
+            places.add(new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title(pois.get(i).getPoi_name()));
+        }
 
 
     }
@@ -304,22 +304,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             init();
         }
-//        // add markers for each POI in "List<Poi> pois"
-//        for (int i = 0; i < pois.size(); i++) {
-//            Poi poi = pois.get(i);
-//            // get the geo location of the poi
-//            float[] latLng = geoCoding(poi.getPoi_address());
-//            String poiName = poi.getPoi_name();
-//            MarkerOptions place = new MarkerOptions().position(new LatLng(latLng[0], latLng[1])).title(poiName);
-//            mMap.addMarker(place);
-//        }
+        // add markers for each POI in "List<Poi> pois"
+        for (int i = 0; i < pois.size(); i++) {
+            Poi poi = pois.get(i);
+            // get the geo location of the poi
+            String poiName = poi.getPoi_name();
+//            float[] latLng = getGeoInfo(poi.getPoi_latitude(), poi.getPoi_longitude());
+            MarkerOptions place = new MarkerOptions()
+                    .position(new LatLng(getGeoInfo(poi.getPoi_latitude()), getGeoInfo(poi.getPoi_latitude())))
+                    .title(poiName);
+            mMap.addMarker(place);
+        }
 
-        mMap.addMarker(bridge);
-        mMap.addMarker(wharf);
-        mMap.addMarker(chinaTown);
+//        mMap.addMarker(bridge);
+//        mMap.addMarker(wharf);
+//        mMap.addMarker(chinaTown);
     }
 
+    private float getGeoInfo(String lat) {
+        float num = 0;
+        boolean flag = false;
+        for (int i = 0; i < lat.length(); i++) {
+            while (lat.charAt(i) != '.') {
+                if (lat.charAt(i) == '-') {
+                    flag = true;
+                } else {
+                    num = num * 10 + (lat.charAt(i) - '0');
+                }
+            }
+            // deal with decimals
+            
 
+        }
+
+        return flag == true? num : -num;
+    }
 
 
     /**

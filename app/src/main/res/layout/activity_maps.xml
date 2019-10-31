@@ -74,7 +74,7 @@
         android:padding="15dp"
         android:layout_marginBottom="68dp"
         >
-        <!-- marginBottom was 68dp -->
+        <!-- marginBottom to 56dp -->
         <RelativeLayout
             android:id="@+id/poi_scroll_box"
             android:orientation="horizontal"
