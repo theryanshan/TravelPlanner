@@ -113,8 +113,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /** route generating from here */
         // fake locations: Golden Gate Bridge & Fisherman's Wharf
-        MarkerOptions bridge = new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title("Location 1");
-        MarkerOptions wharf = new MarkerOptions().position(new LatLng(37.806710, -122.416336)).title("Location 2");
+        // 37.830321, -122.479750
+        // 37.806710, -122.416336
+        MarkerOptions bridge = new MarkerOptions().position(new LatLng(37.419857, -122.078827)).title("Location 1");
+        MarkerOptions wharf = new MarkerOptions().position(new LatLng(37.386051, -122.083855)).title("Location 2");
         new FetchURL(MapsActivity.this).execute(getUrl(bridge.getPosition(), wharf.getPosition(), "driving"), "driving");
 
     }
