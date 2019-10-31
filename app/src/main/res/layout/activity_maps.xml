@@ -15,9 +15,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:elevation="10dp"
         android:background="@drawable/white_border"
         android:id="@+id/relLayout">
@@ -51,19 +51,19 @@
         android:layout_below="@+id/relLayout"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/ic_gps"
-        android:src="@drawable/ic_gps_white"/>
+        android:src="@drawable/ic_gps"/>
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_below="@+id/relLayout"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="100dp"
         android:id="@+id/ic_menu_edit"
-        android:src="@drawable/icon_list"/>
+        android:src="@android:drawable/ic_menu_add"/>
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll"
@@ -73,8 +73,8 @@
         android:layout_alignParentBottom="true"
         android:padding="15dp"
         android:layout_marginBottom="68dp"
+
         >
-        <!-- marginBottom was 68dp -->
         <RelativeLayout
             android:id="@+id/poi_scroll_box"
             android:orientation="horizontal"
