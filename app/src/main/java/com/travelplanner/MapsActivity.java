@@ -4,17 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,14 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,6 +31,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -54,10 +50,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
     private GoogleMap mMap;
     private EditText mSearchText;
@@ -70,7 +65,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mLastKnownLocation;
     private AutocompleteSessionToken token;
 
-
     private static final String TAG = "MapsActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -80,20 +74,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected DatabaseReference database;
     private ArrayList<Poi> pois;
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//
-//            case R.id.ic_menu_edit:
-//                showList();
-//                return true;
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//
-//        }
-//    }
+    /** for route generating */
+    private Button btnGetDirection;
+    private Polyline currentPolyline;
+    private MarkerOptions bridge;
+    private MarkerOptions wharf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +102,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showList();
             }
         });
+
+        /** route generating from here */
+        // fake locations: Golden Gate Bridge & Fisherman's Wharf
+        // 37.830321, -122.479750
+        // 37.806710, -122.416336
+        bridge = new MarkerOptions().position(new LatLng(37.419857, -122.078827)).title("Location 1");
+        wharf = new MarkerOptions().position(new LatLng(37.386051, -122.083855)).title("Location 2");
+        new FetchURL(MapsActivity.this).execute(getUrl(bridge.getPosition(), wharf.getPosition(), "driving"), "driving");
+
     }
 
     private void loadInPOIData() {
@@ -291,5 +285,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             init();
         }
+
+        mMap.addMarker(bridge);
+        mMap.addMarker(wharf);
+    }
+
+
+
+
+    /**
+     * This is the helper function to get the url of two locations from Google Directions API
+     */
+    private String getUrl(LatLng origin, LatLng dest, String directionMode) {
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode: driving
+        String mode = "mode=" + directionMode;
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        return url;
+    }
+
+    /**
+     * This is the helper function to draw lines
+     */
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 }
