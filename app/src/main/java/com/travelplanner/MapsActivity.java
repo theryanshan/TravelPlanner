@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -21,6 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,6 +54,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -71,10 +77,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
 
-    private FirebaseDatabase database;
-    private DatabaseReference poiReference;
-    private List<Poi> pois = new ArrayList<>();
+    protected DatabaseReference database;
+    private ArrayList<Poi> pois;
 
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//
+//            case R.id.ic_menu_edit:
+//                showList();
+//                return true;
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +109,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         token = AutocompleteSessionToken.newInstance();
 
         loadInPOIData();
-        addPOIToScrollView();
 
         mList = findViewById(R.id.ic_menu_edit);
         mList.setOnClickListener(new View.OnClickListener(){
@@ -102,41 +120,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void loadInPOIData() {
-        database = FirebaseDatabase.getInstance();
-        poiReference = database.getReference("POI");
-        readPois();
-        addPOIToScrollView();
-    }
-
-    private void readPois() {
-        poiReference.addValueEventListener(new ValueEventListener() {
+        pois = new ArrayList<>();
+        database = FirebaseDatabase.getInstance().getReference("POI");
+        database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                pois.clear();
-                List<String> ranks = new ArrayList<>();
-                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-                    ranks.add(keyNode.getKey());
-                    Poi poi = keyNode.getValue(Poi.class);
+                for(DataSnapshot poiSnapshot : dataSnapshot.getChildren()){
+                    Poi poi = poiSnapshot.getValue(Poi.class);
                     pois.add(poi);
                 }
-                Log.d(TAG, "Jeffffff");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.e(TAG, "onCancelled: Error occurred");
             }
         });
+        addPOIToScrollView();
     }
     
     private void addPOIToScrollView() {
-        LinearLayout poiScrollBox = findViewById(R.id.poi_scroll_box);
-        for (int i = 0; i < pois.size(); i++) {
-            String poi_id = "poi_" + i;
-            int resID = getResources().getIdentifier(poi_id, "id", getPackageName());
-            ImageButton imageBtn = findViewById(resID);
-        }
-        Log.d(TAG, "Here we want to add Poi information to the scroll view");
+        Log.d(TAG, "Scroll View is being initialized.");
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView poiRecyclerView = findViewById(R.id.poi_scroll_item);
+        poiRecyclerView.setLayoutManager(layoutManager);
+
+        RecyclerView.Adapter adapter = new PoiScrollViewAdapter(this, pois);
+        poiRecyclerView.setAdapter(adapter);
     }
 
     private void showList(){
