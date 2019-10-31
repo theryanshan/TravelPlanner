@@ -72,9 +72,9 @@
         android:background="#1A1E21"
         android:layout_alignParentBottom="true"
         android:padding="15dp"
-        android:layout_marginBottom="68dp"
-
+        android:layout_marginBottom="56dp"
         >
+        <!-- marginBottom was 68dp -->
         <RelativeLayout
             android:id="@+id/poi_scroll_box"
             android:orientation="horizontal"
