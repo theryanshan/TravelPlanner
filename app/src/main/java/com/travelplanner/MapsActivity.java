@@ -71,8 +71,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mLastKnownLocation;
     private AutocompleteSessionToken token;
 
-    private List<Poi> pois;
-
     private static final String TAG = "MapsActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -88,6 +86,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    private StorageReference storageRef;
     private Button btnGetDirection;
     private Polyline currentPolyline;
+    private List<Poi> pois;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +110,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // for route generating
-        //new FetchURL(MapsActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
+        // from here are for route generating
+        // fake locations: Golden Gate Bridge & Fisherman's Wharf
+        MarkerOptions bridge = new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title("Location 1");
+        MarkerOptions wharf = new MarkerOptions().position(new LatLng(37.806710, -122.416336)).title("Location 2");
+        new FetchURL(MapsActivity.this).execute(getUrl(bridge.getPosition(), wharf.getPosition(), "driving"), "driving");
 
     }
 
@@ -257,9 +260,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             init();
         }
 
-//        // add markers for the data
-//        for (Poi poi : pois) {
-//            MarkerOptions place = new MarkerOptions().position(new LatLng(27.658143, 85.3199503)).title("Location 1");
+//        // add markers for each POI in "List<Poi> pois"
+//        for (int i = 0; i < pois.size(); i++) {
+//            Poi poi = pois.get(i);
+//            // get the geo location of the poi
+//            float[] latLng = geoCoding(poi.getPoi_address());
+//            String poiName = poi.getPoi_name();
+//            MarkerOptions place = new MarkerOptions().position(new LatLng(latLng[0], latLng[1])).title(poiName);
 //            mMap.addMarker(place);
 //        }
     }
@@ -286,6 +293,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return url;
     }
 
+    /**
+     * This is the helper function to draw lines
+     */
     @Override
     public void onTaskDone(Object... values) {
         if (currentPolyline != null)
