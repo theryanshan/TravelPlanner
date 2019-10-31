@@ -77,7 +77,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
 
-//    // for route generating
+
+    /** for route generating */
 //    LatLngBounds.Builder boundsBuilder;
 //    LatLngBounds bounds;
 //    GoogleApiClient mGoogleApiClient;
@@ -110,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // from here are for route generating
+        /** route generating from here */
         // fake locations: Golden Gate Bridge & Fisherman's Wharf
         MarkerOptions bridge = new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title("Location 1");
         MarkerOptions wharf = new MarkerOptions().position(new LatLng(37.806710, -122.416336)).title("Location 2");
