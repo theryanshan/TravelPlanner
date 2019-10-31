@@ -17,14 +17,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class ListActivity extends AppCompatActivity {
 
     private static final String TAG = "ListActivity";
 
     private ArrayList<Poi> mList;
-
+    private ArrayList<String> keys;
     protected DatabaseReference database;
 
     @Override
@@ -42,17 +41,18 @@ public class ListActivity extends AppCompatActivity {
         Log.d(TAG, "fetchPoiDB: fetch poi from database.");
 
         mList = new ArrayList<>();
-        database = FirebaseDatabase.getInstance().getReference("POI");
+        keys = new ArrayList<>();
+
+        database = FirebaseDatabase.getInstance().getReference("Selected");
 
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot poiSnapshot : dataSnapshot.getChildren()){
-
                     Poi poi = poiSnapshot.getValue(Poi.class);
-
                     mList.add(poi);
+                    keys.add(poiSnapshot.getKey());
                 }
             }
 
@@ -77,18 +77,13 @@ public class ListActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(divider);
 
-        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.START | ItemTouchHelper.END) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView,
                                   @NonNull RecyclerView.ViewHolder dragged,
                                   @NonNull RecyclerView.ViewHolder target) {
 
-                int position_dragged = dragged.getAdapterPosition();
-                int position_target = target.getAdapterPosition();
-
-                Collections.swap(mList, position_dragged, position_target);
-                adapter.notifyItemMoved(position_dragged, position_target);
                 return false;
             }
 
@@ -98,9 +93,15 @@ public class ListActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 mList.remove(position);
                 adapter.notifyItemRemoved(position);
+                deleteItem(position);
             }
         });
-
         helper.attachToRecyclerView(recyclerView);
+    }
+
+    public void deleteItem(int position) {
+        String key = keys.get(position);
+        database = FirebaseDatabase.getInstance().getReference().child("Selected");
+        database.child(key).removeValue();
     }
 }
