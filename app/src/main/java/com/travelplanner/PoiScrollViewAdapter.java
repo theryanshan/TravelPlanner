@@ -80,7 +80,13 @@ public class PoiScrollViewAdapter extends RecyclerView.Adapter<PoiScrollViewAdap
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            long count = dataSnapshot.getChildrenCount() - 1;
+                            // This part if for deduplicating adding to list
+//                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                if (snapshot.getValue().equals(poi.getPoi_name())) {
+//
+//                                }
+//                            }
+                            long count = dataSnapshot.getChildrenCount();
                             count++;
                             writeSelected(Long.toString(count), poi.getPoi_name(),
                                     poi.getPoi_address(), poi.getPoi_image());
