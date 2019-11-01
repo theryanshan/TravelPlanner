@@ -8,10 +8,6 @@ public class Poi {
     private String poi_latitude;
     private String poi_image;
 
-    public Poi() {
-
-    }
-
     public Poi(String poi_name, String poi_address, String poi_longitude, String poi_latitude, String poi_image) {
         this.poi_name = poi_name;
         this.poi_address = poi_address;
@@ -19,6 +15,8 @@ public class Poi {
         this.poi_latitude = poi_latitude;
         this.poi_image = poi_image;
     }
+    
+    public Poi() {}
 
     public String getPoi_rank() {
 
