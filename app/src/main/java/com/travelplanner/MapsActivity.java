@@ -27,7 +27,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,6 +36,10 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
@@ -114,9 +117,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for(DataSnapshot poiSnapshot : dataSnapshot.getChildren()){
                     Poi poi = poiSnapshot.getValue(Poi.class);
                     pois.add(poi);
-
                 }
-                // route generating: setup markerOptions
+                /** setup markerOptions & generate routes */
                 loadMarkers();
             }
             @Override
@@ -374,5 +376,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        if (currentPolyline != null)
 //            currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+//        currentPolyline.setColor();
     }
 }
