@@ -94,6 +94,7 @@ public class ListActivity extends AppCompatActivity {
                 mList.remove(position);
                 adapter.notifyItemRemoved(position);
                 deleteItem(position);
+                finish();
             }
         });
         helper.attachToRecyclerView(recyclerView);
