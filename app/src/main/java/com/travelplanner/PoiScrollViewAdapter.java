@@ -46,8 +46,9 @@ public class PoiScrollViewAdapter extends RecyclerView.Adapter<PoiScrollViewAdap
         }
     }
 
-    private void writeSelected(String rank, String name, String address, String image) {
-        Poi poi = new Poi(name, address, image);
+    private void writeSelected(String rank, String name, String address,
+                               String longitude, String latitude, String image) {
+        Poi poi = new Poi(name, address, latitude, longitude, image);
         database.child(rank).setValue(poi);
     }
 
@@ -93,7 +94,8 @@ public class PoiScrollViewAdapter extends RecyclerView.Adapter<PoiScrollViewAdap
                                 long count = dataSnapshot.getChildrenCount();
                                 count++;
                                 writeSelected(Long.toString(count), poi.getPoi_name(),
-                                        poi.getPoi_address(), poi.getPoi_image());
+                                        poi.getPoi_address(), poi.getPoi_longitude(),
+                                        poi.getPoi_latitude(), poi.getPoi_image());
 
                                 Toast.makeText(mContext, poi.getPoi_name() +
                                         " is added!", Toast.LENGTH_SHORT).show();

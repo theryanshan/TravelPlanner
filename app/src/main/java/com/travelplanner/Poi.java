@@ -12,12 +12,6 @@ public class Poi {
 
     }
 
-    public Poi(String poi_name, String poi_address, String poi_image) {
-        this.poi_name = poi_name;
-        this.poi_address = poi_address;
-        this.poi_image = poi_image;
-    }
-
     public Poi(String poi_name, String poi_address, String poi_longitude, String poi_latitude, String poi_image) {
         this.poi_name = poi_name;
         this.poi_address = poi_address;
