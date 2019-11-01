@@ -78,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected DatabaseReference database;
     private ArrayList<Poi> pois;
+    private ArrayList<Poi> selected;
 
     // for route generating
     private Polyline currentPolyline;
@@ -98,6 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         token = AutocompleteSessionToken.newInstance();
 
         loadInPOIData();
+        loadInSelectedPOIData();
 
         mList = findViewById(R.id.ic_menu_edit);
         mList.setOnClickListener(new View.OnClickListener(){
@@ -118,8 +120,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Poi poi = poiSnapshot.getValue(Poi.class);
                     pois.add(poi);
                 }
-                /** setup markerOptions & generate routes */
-                loadMarkers();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -129,7 +129,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addPOIToScrollView();
     }
 
-
+    private void loadInSelectedPOIData() {
+        selected = new ArrayList<>();
+        database = FirebaseDatabase.getInstance().getReference("Selected");
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot poiSnapshot : dataSnapshot.getChildren()){
+                    Poi poi = poiSnapshot.getValue(Poi.class);
+                    selected.add(poi);
+                }
+                /** setup markerOptions & generate routes */
+                loadMarkers();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: Error occurred");
+            }
+        });
+    }
     private void addPOIToScrollView() {
         Log.d(TAG, "Scroll View is being initialized.");
         LinearLayoutManager layoutManager
@@ -301,13 +319,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void loadMarkers() {
         places = new  ArrayList<>();
         /** generate route between two POIs */
-        if (pois != null && !pois.isEmpty()) {
-            for (int i = 0; i < pois.size(); i++) {
+        if (selected != null && !selected.isEmpty()) {
+            for (int i = 0; i < selected.size(); i++) {
                 // create MarkerOptions for each POI
-                String poiName = pois.get(i).getPoi_name();
+                String poiName = selected.get(i).getPoi_name();
                 places.add(new MarkerOptions()
                         // lat & long are opposite here
-                        .position(new LatLng(getGeoInfo(pois.get(i).getPoi_longitude()), getGeoInfo(pois.get(i).getPoi_latitude())))
+                        .position(new LatLng(getGeoInfo(selected.get(i).getPoi_latitude()), getGeoInfo(selected.get(i).getPoi_longitude())))
                         .title(poiName));
 
                 // for each pair of POIs, get URLs for Directions API to draw routes
@@ -373,8 +391,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onTaskDone(Object... values) {
-//        if (currentPolyline != null)
-//            currentPolyline.remove();
+        if (currentPolyline != null)
+            currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
 //        currentPolyline.setColor();
     }
