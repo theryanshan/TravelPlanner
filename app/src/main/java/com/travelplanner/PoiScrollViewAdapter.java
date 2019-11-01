@@ -81,19 +81,27 @@ public class PoiScrollViewAdapter extends RecyclerView.Adapter<PoiScrollViewAdap
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             // This part if for deduplicating adding to list
-//                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                                if (snapshot.getValue().equals(poi.getPoi_name())) {
-//
-//                                }
-//                            }
-                            long count = dataSnapshot.getChildrenCount();
-                            count++;
-                            writeSelected(Long.toString(count), poi.getPoi_name(),
-                                    poi.getPoi_address(), poi.getPoi_image());
+                            boolean poiExist = false;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Poi poiInstance = snapshot.getValue(Poi.class);
+                                if (poiInstance.getPoi_name().equals(poi.getPoi_name())) {
+                                    poiExist = true;
+                                    break;
+                                }
+                            }
+                            if (!poiExist) {
+                                long count = dataSnapshot.getChildrenCount();
+                                count++;
+                                writeSelected(Long.toString(count), poi.getPoi_name(),
+                                        poi.getPoi_address(), poi.getPoi_image());
 
-                            FirebaseDatabase.getInstance().getReference().child("Count").setValue(count);
-                            Toast.makeText(mContext, poi.getPoi_name() +
-                                            " is added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, poi.getPoi_name() +
+                                        " is added!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, poi.getPoi_name() +
+                                        " has been added previously.",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
 
                         @Override

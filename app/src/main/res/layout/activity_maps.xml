@@ -63,7 +63,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="100dp"
         android:id="@+id/ic_menu_edit"
-        android:src="@android:drawable/ic_menu_edit"/>
+        android:src="@android:drawable/ic_menu_add"/>
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll"
@@ -73,8 +73,8 @@
         android:layout_alignParentBottom="true"
         android:padding="15dp"
         android:layout_marginBottom="68dp"
+
         >
-        <!-- marginBottom to 56dp -->
         <RelativeLayout
             android:id="@+id/poi_scroll_box"
             android:orientation="horizontal"

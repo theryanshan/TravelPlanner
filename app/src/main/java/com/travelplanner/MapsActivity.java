@@ -76,13 +76,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected DatabaseReference database;
     private ArrayList<Poi> pois;
 
-    /** for route generating */
-    private Button btnGetDirection;
+    // for route generating
     private Polyline currentPolyline;
-
-    private MarkerOptions bridge;
-    private MarkerOptions wharf;
-    private MarkerOptions chinaTown;
     private List<MarkerOptions> places;
 
 
@@ -108,26 +103,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showList();
             }
         });
-
-        /**
-         ***************** route generating from here *****************
-         */
-//        // fake locations by hard code: Golden Gate Bridge & Fisherman's Wharf
-//        bridge = new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title("Location 1");
-//        wharf = new MarkerOptions().position(new LatLng(37.806710, -122.416336)).title("Location 2");
-//        chinaTown = new MarkerOptions().position(new LatLng(37.7941, -122.4078)).title("Location 3");
-//        new FetchURL(MapsActivity.this).execute(getUrl(bridge.getPosition(), wharf.getPosition(), "driving"), "driving");
-//        new FetchURL(MapsActivity.this).execute(getUrl(wharf.getPosition(), chinaTown.getPosition(), "driving"), "driving");
-
-        // real locations:
-        // for now i starts from 1, will cause bug if select less than 2 POIs
-        // need a starting point (e.g., hotel)
-        for(int i = 1; i < pois.size(); i++) {
-            /** need a lat long getter here */
-            places.add(new MarkerOptions().position(new LatLng(37.830321, -122.479750)).title(pois.get(i).getPoi_name()));
-        }
-
-
     }
 
     private void loadInPOIData() {
@@ -139,9 +114,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for(DataSnapshot poiSnapshot : dataSnapshot.getChildren()){
                     Poi poi = poiSnapshot.getValue(Poi.class);
                     pois.add(poi);
-                }
-            }
 
+                }
+                // route generating: setup markerOptions
+                loadMarkers();
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG, "onCancelled: Error occurred");
@@ -149,7 +126,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         addPOIToScrollView();
     }
-    
+
+
     private void addPOIToScrollView() {
         Log.d(TAG, "Scroll View is being initialized.");
         LinearLayoutManager layoutManager
@@ -304,45 +282,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             init();
         }
-        // add markers for each POI in "List<Poi> pois"
-        for (int i = 0; i < pois.size(); i++) {
-            Poi poi = pois.get(i);
-            // get the geo location of the poi
-            String poiName = poi.getPoi_name();
-//            float[] latLng = getGeoInfo(poi.getPoi_latitude(), poi.getPoi_longitude());
-            MarkerOptions place = new MarkerOptions()
-                    .position(new LatLng(getGeoInfo(poi.getPoi_latitude()), getGeoInfo(poi.getPoi_latitude())))
-                    .title(poiName);
-            mMap.addMarker(place);
-        }
 
-//        mMap.addMarker(bridge);
-//        mMap.addMarker(wharf);
-//        mMap.addMarker(chinaTown);
+//        // add markers for each POI in "List<Poi> pois"
+//        if (places != null && !places.isEmpty()) {
+//            for (MarkerOptions place : places) {
+//                mMap.addMarker(place);
+//            }
+//            System.out.println(places.size());
+//        }
     }
 
-    private float getGeoInfo(String lat) {
-        float num = 0;
-        boolean flag = false;
-        for (int i = 0; i < lat.length(); i++) {
-            while (lat.charAt(i) != '.') {
-                if (lat.charAt(i) == '-') {
-                    flag = true;
-                } else {
-                    num = num * 10 + (lat.charAt(i) - '0');
+
+    /** Helper function:
+     * fetch URLs of route & add markers
+     */
+    private void loadMarkers() {
+        places = new  ArrayList<>();
+        /** generate route between two POIs */
+        if (pois != null && !pois.isEmpty()) {
+            for (int i = 0; i < pois.size(); i++) {
+                // create MarkerOptions for each POI
+                String poiName = pois.get(i).getPoi_name();
+                places.add(new MarkerOptions()
+                        // lat & long are opposite here
+                        .position(new LatLng(getGeoInfo(pois.get(i).getPoi_longitude()), getGeoInfo(pois.get(i).getPoi_latitude())))
+                        .title(poiName));
+
+                // for each pair of POIs, get URLs for Directions API to draw routes
+                if (places.size() >= 2) {
+                    new FetchURL(MapsActivity.this)
+                            .execute(getUrl(places.get(i - 1).getPosition(), places.get(i).getPosition(), "driving"), "driving");
                 }
             }
-            // deal with decimals
-            
-
         }
-
-        return flag == true? num : -num;
+        /** add markers for each POI */
+        if (places != null && !places.isEmpty()) {
+            for (MarkerOptions place : places) {
+                mMap.addMarker(place);
+            }
+        }
     }
 
-
+    /** Helper function:
+     * convert string latLng to double
+     */
+    private double getGeoInfo(String lat) {
+        double num = 0;
+        boolean flag = false;
+        int i = 0;
+        // 1. deal with integer part
+        while (lat.charAt(i) != '.') {
+            if (lat.charAt(i) == '-') {
+                flag = true;
+            } else {
+                num = num * 10 + (lat.charAt(i) - '0');
+            }
+            i++;
+        }
+        i++;
+        // 2. deal with decimal part
+        int count  = 1; // divide by 10^k
+        while (i < lat.length()) {
+            num += (lat.charAt(i++) - '0' + 0.0) / Math.pow(10, count++);
+        }
+        return flag? -num : num;
+    }
     /**
-     * This is the helper function to get the url of two locations from Google Directions API
+     * This is the helper function for getting the url of two locations from Google Directions API
      */
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
@@ -361,7 +367,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * This is the helper function to draw lines
+     * This is the helper for drawing lines
      */
     @Override
     public void onTaskDone(Object... values) {
