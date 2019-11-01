@@ -140,6 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     selected.add(poi);
                 }
                 /** setup markerOptions & generate routes */
+                //
                 loadMarkers();
             }
             @Override
