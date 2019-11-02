@@ -1,5 +1,5 @@
 # TravelPlanner
-This app is base on Google Maps, utilize Maps API functionality through ovlerlay, helping tourist visalize travel routes. 
+This app is base on Google Maps, utilize Maps API functionality through overlay, helping tourist visualize travel routes. 
 
 Acceptance criteria for the Minimum Viable Product:
   * Route planning for ONE international major city
